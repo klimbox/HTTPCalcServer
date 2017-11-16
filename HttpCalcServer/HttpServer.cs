@@ -27,7 +27,7 @@ namespace HttpCalcServer
                     HttpListenerContext context = listener.GetContext();
                     Receiver(context);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {  }
             }
         }
@@ -37,19 +37,20 @@ namespace HttpCalcServer
             string a = "";
             string b = "";
             string op = "";
-
+            string[] param;
             if (context.Request.HttpMethod == "POST")
             {
-                string[] param = new StreamReader(context.Request.InputStream).ReadToEnd().Split('=', '&');
+                param = new StreamReader(context.Request.InputStream).ReadToEnd().Split('=', '&');
                 a = param[1];
                 b = param[3];
                 op = param[5];
             }
             else
             {
-                a = context.Request.QueryString["a"];
-                b = context.Request.QueryString["b"];
-                op = context.Request.QueryString["op"];
+                param = context.Request.RawUrl.Split('=', '&');
+                a = param[1];
+                b = param[3];
+                op = param[5];
             }
 
             int n1 = Convert.ToInt32(a);
